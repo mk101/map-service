@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+
+    <changeSet id="initial-map-service" author="maksim.kolesov">
+        <sqlFile path="tables/create-tables.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="constraints/create-constraints.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="indexes/create-indexes.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+</databaseChangeLog>

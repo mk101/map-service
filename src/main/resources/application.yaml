@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 25
+  jpa:
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
+  liquibase:
+    change-log: db/changelog/db.changelog-master.xml
+
+auth-service:
+  url: ${AUTH_SERVICE_HOST}:${AUTH_SERVICE_PORT}/${AUTH_SERVICE_PATH}
+  issuer: mapping-service

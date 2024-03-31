@@ -21,6 +21,8 @@
 		<lombok.version>1.18.30</lombok.version>
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
 		<nimbus-jose-jwt.version>9.31</nimbus-jose-jwt.version>
+		<logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
+		<hypersistence-utils-hibernate-63.version>3.7.3</hypersistence-utils-hibernate-63.version>
 	</properties>
 
 	<dependencies>
@@ -51,6 +53,18 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<version>${logstash-logback-encoder.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.hypersistence</groupId>
+			<artifactId>hypersistence-utils-hibernate-63</artifactId>
+			<version>${hypersistence-utils-hibernate-63.version}</version>
 		</dependency>
 
 		<dependency>
