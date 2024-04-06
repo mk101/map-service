@@ -7,9 +7,9 @@ import kolesov.maksim.mapping.map.dto.ResponseDto;
 import kolesov.maksim.mapping.map.model.Role;
 import kolesov.maksim.mapping.map.model.UserEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RequestMapping("/layer")
 public interface LayerController {
@@ -17,5 +17,9 @@ public interface LayerController {
     @PostMapping
     @HasRole(Role.CREATE_MAP)
     ResponseDto<LayerDto> create(@RequestBody @Valid LayerDto dto, @AuthenticationPrincipal UserEntity user);
+
+    @PutMapping
+    @HasRole(value = {Role.EDIT_OWN_MAP, Role.EDIT_ANY_MAP})
+    ResponseDto<LayerDto> update(@RequestBody @Valid LayerDto dto, @AuthenticationPrincipal UserEntity user);
 
 }
