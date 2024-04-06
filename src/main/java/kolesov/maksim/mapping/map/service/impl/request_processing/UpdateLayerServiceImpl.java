@@ -3,9 +3,12 @@ package kolesov.maksim.mapping.map.service.impl.request_processing;
 import io.hypersistence.utils.hibernate.type.range.Range;
 import kolesov.maksim.mapping.map.dto.LayerDto;
 import kolesov.maksim.mapping.map.dto.UserDto;
+import kolesov.maksim.mapping.map.dto.UserRoleDto;
+import kolesov.maksim.mapping.map.exception.ForbiddenException;
 import kolesov.maksim.mapping.map.exception.NotFoundException;
 import kolesov.maksim.mapping.map.mapper.LayerMapper;
 import kolesov.maksim.mapping.map.model.LayerEntity;
+import kolesov.maksim.mapping.map.model.Role;
 import kolesov.maksim.mapping.map.repository.LayerRepository;
 import kolesov.maksim.mapping.map.service.request_processing.AbstractLayerService;
 import kolesov.maksim.mapping.map.service.request_processing.UpdateLayerService;
@@ -38,6 +41,11 @@ public class UpdateLayerServiceImpl extends AbstractLayerService implements Upda
 
         LayerEntity layerEntity = layerRepository.findById(layerId)
                 .orElseThrow(() -> new NotFoundException("Layer not found"));
+
+        if (!user.getId().equals(layerEntity.getCreatedBy())
+                && user.getRoles().stream().map(UserRoleDto::getRole).noneMatch(r -> r == Role.EDIT_ANY_MAP)) {
+            throw new ForbiddenException("Access deny");
+        }
 
         layerEntity.setName(layerDto.getName());
         layerEntity.setDescription(layerDto.getDescription());
