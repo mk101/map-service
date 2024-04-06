@@ -1,8 +1,10 @@
 package kolesov.maksim.mapping.map.controller;
 
 import jakarta.validation.Valid;
+import kolesov.maksim.mapping.map.annotation.HasRole;
 import kolesov.maksim.mapping.map.dto.LayerDto;
 import kolesov.maksim.mapping.map.dto.ResponseDto;
+import kolesov.maksim.mapping.map.model.Role;
 import kolesov.maksim.mapping.map.model.UserEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface LayerController {
 
     @PostMapping
+    @HasRole(Role.CREATE_MAP)
     ResponseDto<LayerDto> create(@RequestBody @Valid LayerDto dto, @AuthenticationPrincipal UserEntity user);
 
 }
