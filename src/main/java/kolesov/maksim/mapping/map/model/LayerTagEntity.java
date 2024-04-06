@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "layerEntity")
 @Entity
 @Table(name = "layer_tag")
 @AllArgsConstructor

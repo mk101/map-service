@@ -6,6 +6,7 @@ import kolesov.maksim.mapping.map.dto.ResponseDto;
 import kolesov.maksim.mapping.map.mapper.UserMapper;
 import kolesov.maksim.mapping.map.model.UserEntity;
 import kolesov.maksim.mapping.map.service.request_processing.AddLayerService;
+import kolesov.maksim.mapping.map.service.request_processing.DeleteLayerService;
 import kolesov.maksim.mapping.map.service.request_processing.UpdateLayerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +19,7 @@ public class LayerControllerImpl implements LayerController {
 
     private final AddLayerService addLayerService;
     private final UpdateLayerService updateLayerService;
+    private final DeleteLayerService deleteLayerService;
     private final UserMapper userMapper;
 
     @Override
@@ -33,6 +35,14 @@ public class LayerControllerImpl implements LayerController {
         return ResponseDto.<LayerDto>builder()
                 .success(true)
                 .data(updateLayerService.update(dto, userMapper.toDto(user)))
+        .build();
+    }
+
+    @Override
+    public ResponseDto<Void> delete(UUID id, UserEntity user) {
+        deleteLayerService.delete(id, userMapper.toDto(user));
+        return ResponseDto.<Void>builder()
+                .success(true)
         .build();
     }
 

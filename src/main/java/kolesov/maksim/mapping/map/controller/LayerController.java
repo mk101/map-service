@@ -22,4 +22,8 @@ public interface LayerController {
     @HasRole(value = {Role.EDIT_OWN_MAP, Role.EDIT_ANY_MAP})
     ResponseDto<LayerDto> update(@RequestBody @Valid LayerDto dto, @AuthenticationPrincipal UserEntity user);
 
+    @DeleteMapping
+    @HasRole(value = {Role.DELETE_ANY_MAP, Role.DELETE_OWN_MAP})
+    ResponseDto<Void> delete(@RequestParam UUID id, @AuthenticationPrincipal UserEntity user);
+
 }
