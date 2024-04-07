@@ -9,9 +9,10 @@ import kolesov.maksim.mapping.map.model.UserEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
-@RequestMapping("/layer")
+@RequestMapping("/layers")
 public interface LayerController {
 
     @PostMapping
@@ -25,5 +26,8 @@ public interface LayerController {
     @DeleteMapping
     @HasRole(value = {Role.DELETE_ANY_MAP, Role.DELETE_OWN_MAP})
     ResponseDto<Void> delete(@RequestParam UUID id, @AuthenticationPrincipal UserEntity user);
+
+    @GetMapping
+    ResponseDto<List<LayerDto>> getByUser(@RequestParam UUID id);
 
 }

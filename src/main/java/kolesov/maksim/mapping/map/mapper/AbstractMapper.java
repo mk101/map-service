@@ -1,9 +1,13 @@
 package kolesov.maksim.mapping.map.mapper;
 
+import java.util.List;
+
 public interface AbstractMapper<E, D> {
 
-    public abstract E toEntity(D dto);
+    E toEntity(D dto);
 
-    public abstract D toDto(E entity);
+    D toDto(E entity);
+
+    List<D> toDto(List<E> entities);
 
 }
