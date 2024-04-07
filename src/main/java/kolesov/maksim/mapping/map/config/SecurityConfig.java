@@ -34,6 +34,8 @@ public class SecurityConfig {
                                     .permitAll()
                                 .requestMatchers(HttpMethod.GET, "/layers")
                                     .permitAll()
+                                .requestMatchers("/search")
+                                    .permitAll()
                                 .anyRequest()
                                     .authenticated()
                 )

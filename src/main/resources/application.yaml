@@ -16,3 +16,7 @@ spring:
 auth-service:
   url: ${AUTH_SERVICE_HOST}:${AUTH_SERVICE_PORT}/${AUTH_SERVICE_PATH}
   issuer: mapping-service
+
+elasticsearch:
+  host: ${ELASTICSEARCH_HOST}
+  port: ${ELASTICSEARCH_PORT}
