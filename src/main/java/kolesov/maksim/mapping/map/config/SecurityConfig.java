@@ -2,6 +2,7 @@ package kolesov.maksim.mapping.map.config;
 
 import jakarta.servlet.http.HttpServletResponse;
 import kolesov.maksim.mapping.map.controller.LayerController;
+import kolesov.maksim.mapping.map.controller.TagController;
 import kolesov.maksim.mapping.map.filter.JwtAuthenticationManager;
 import kolesov.maksim.mapping.map.filter.JwtFilter;
 import kolesov.maksim.mapping.map.service.JwtService;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.Collections;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -57,7 +59,7 @@ public class SecurityConfig {
     ) {
         JwtFilter filter = new JwtFilter(jwtService, userService);
         filter.setAuthenticationManager(authenticationManager);
-        filter.initPaths(Collections.singletonList(LayerController.class));
+        filter.initPaths(List.of(LayerController.class, TagController.class));
 
         return filter;
     }
