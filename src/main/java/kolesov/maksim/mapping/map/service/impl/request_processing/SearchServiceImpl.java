@@ -2,8 +2,10 @@ package kolesov.maksim.mapping.map.service.impl.request_processing;
 
 import kolesov.maksim.mapping.map.dto.LayerDto;
 import kolesov.maksim.mapping.map.mapper.LayerMapper;
+import kolesov.maksim.mapping.map.model.LayerEntity;
 import kolesov.maksim.mapping.map.model.elastic.LayerSearch;
 import kolesov.maksim.mapping.map.repository.LayerRepository;
+import kolesov.maksim.mapping.map.repository.LayerTagRepository;
 import kolesov.maksim.mapping.map.service.request_processing.SearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -25,6 +27,7 @@ public class SearchServiceImpl implements SearchService {
 
     private final ElasticsearchOperations elasticsearchOperations;
     private final LayerRepository layerRepository;
+    private final LayerTagRepository layerTagRepository;
     private final LayerMapper layerMapper;
 
     @Override
@@ -33,7 +36,9 @@ public class SearchServiceImpl implements SearchService {
         SearchHits<LayerSearch> hits = elasticsearchOperations.search(query, LayerSearch.class, IndexCoordinates.of(LAYER_INDEX));
 
         List<UUID> ids = hits.stream().map(SearchHit::getContent).map(LayerSearch::getId).map(UUID::fromString).toList();
-        return layerMapper.toDto(layerRepository.findAllByIds(ids));
+        List<LayerEntity> layers = layerRepository.findAllByIds(ids);
+        layers.forEach(layerEntity -> layerEntity.setTags(layerTagRepository.findAllByLayer(layerEntity.getId())));
+        return layerMapper.toDto(layers);
     }
 
 }
