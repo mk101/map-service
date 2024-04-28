@@ -13,4 +13,7 @@ public interface LayerRepository extends CrudRepository<LayerEntity, UUID> {
     @Query(value = "SELECT * FROM layer WHERE created_by = :userId", nativeQuery = true)
     List<LayerEntity> findAllByUser(@Param("userId") UUID userId);
 
+    @Query(value = "SELECT * FROM layer WHERE id in (:ids)", nativeQuery = true)
+    List<LayerEntity> findAllByIds(@Param("ids") List<UUID> ids);
+
 }

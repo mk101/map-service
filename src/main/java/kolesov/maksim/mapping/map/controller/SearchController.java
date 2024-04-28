@@ -1,5 +1,6 @@
 package kolesov.maksim.mapping.map.controller;
 
+import kolesov.maksim.mapping.map.dto.LayerDto;
 import kolesov.maksim.mapping.map.dto.ResponseDto;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,6 @@ import java.util.UUID;
 public interface SearchController {
 
     @GetMapping
-    ResponseDto<List<UUID>> searchByQuery(@RequestParam String query);
+    ResponseDto<List<LayerDto>> searchByQuery(@RequestParam String query);
 
 }
