@@ -16,6 +16,7 @@ import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.data.elasticsearch.core.query.StringQuery;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,12 +34,16 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public List<LayerDto> searchByQuery(String stringQuery) {
         Query query = new StringQuery(stringQuery);
-        SearchHits<LayerSearch> hits = elasticsearchOperations.search(query, LayerSearch.class, IndexCoordinates.of(LAYER_INDEX));
+        if (elasticsearchOperations.indexOps(IndexCoordinates.of(LAYER_INDEX)).exists()) {
+            SearchHits<LayerSearch> hits = elasticsearchOperations.search(query, LayerSearch.class, IndexCoordinates.of(LAYER_INDEX));
 
-        List<UUID> ids = hits.stream().map(SearchHit::getContent).map(LayerSearch::getId).map(UUID::fromString).toList();
-        List<LayerEntity> layers = layerRepository.findAllByIds(ids);
-        layers.forEach(layerEntity -> layerEntity.setTags(layerTagRepository.findAllByLayer(layerEntity.getId())));
-        return layerMapper.toDto(layers);
+            List<UUID> ids = hits.stream().map(SearchHit::getContent).map(LayerSearch::getId).map(UUID::fromString).toList();
+            List<LayerEntity> layers = layerRepository.findAllByIds(ids);
+            layers.forEach(layerEntity -> layerEntity.setTags(layerTagRepository.findAllByLayer(layerEntity.getId())));
+            return layerMapper.toDto(layers);
+        }
+
+        return Collections.emptyList();
     }
 
 }

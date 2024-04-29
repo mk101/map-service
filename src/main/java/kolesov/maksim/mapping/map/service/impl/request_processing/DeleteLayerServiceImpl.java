@@ -8,9 +8,11 @@ import kolesov.maksim.mapping.map.model.LayerEntity;
 import kolesov.maksim.mapping.map.model.Role;
 import kolesov.maksim.mapping.map.repository.LayerRepository;
 import kolesov.maksim.mapping.map.repository.LayerTagRepository;
+import kolesov.maksim.mapping.map.service.request_processing.AbstractDeleteService;
 import kolesov.maksim.mapping.map.service.request_processing.DeleteLayerService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,11 +20,22 @@ import java.util.UUID;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
-public class DeleteLayerServiceImpl implements DeleteLayerService {
+public class DeleteLayerServiceImpl extends AbstractDeleteService implements DeleteLayerService {
 
     private final LayerRepository layerRepository;
     private final LayerTagRepository layerTagRepository;
+
+    @Autowired
+    public DeleteLayerServiceImpl(
+            ElasticsearchOperations elasticsearchTemplate,
+            LayerRepository layerRepository,
+            LayerTagRepository layerTagRepository
+    ) {
+        super(elasticsearchTemplate, log);
+
+        this.layerRepository = layerRepository;
+        this.layerTagRepository = layerTagRepository;
+    }
 
     @Override
     @Transactional
@@ -38,6 +51,7 @@ public class DeleteLayerServiceImpl implements DeleteLayerService {
         layerRepository.delete(entity);
 
         log.info("Deleted {}", entity);
+        invalidateElastic("layers");
     }
 
 }
