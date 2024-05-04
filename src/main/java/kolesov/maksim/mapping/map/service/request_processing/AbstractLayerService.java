@@ -40,30 +40,32 @@ public abstract class AbstractLayerService {
             case FEATURE_COLLECTION -> throw new IllegalArgumentException("FeatureCollection is illegal in this context");
             case FEATURE -> handleElement(element.getGeometry(), horizontalMin, horizontalMax, verticalMin, verticalMax);
             case POINT -> {
-                for (Object coordinate : element.getCoordinates()) {
-                    checkRanges(BigDecimal.valueOf(((Double) coordinate)), horizontalMax, horizontalMin, verticalMax, verticalMin);
-                }
+                BigDecimal x = BigDecimal.valueOf((Double) element.getCoordinates().get(0));
+                BigDecimal y = BigDecimal.valueOf((Double) element.getCoordinates().get(1));
+
+                horizontalMax.set(x);
+                horizontalMin.set(x);
+                verticalMax.set(y);
+                verticalMin.set(y);
             }
             case POLYGON -> {
                 List<List<Double>> ring = (List<List<Double>>) element.getCoordinates().get(0);
                 for (List<Double> coordinates : ring) {
-                    for (Double coordinate : coordinates) {
-                        checkRanges(BigDecimal.valueOf(coordinate), horizontalMax, horizontalMin, verticalMax, verticalMin);
-                    }
+                    checkRangesHorizontal(BigDecimal.valueOf(coordinates.get(0)), horizontalMax, horizontalMin);
+                    checkRangesVertical(BigDecimal.valueOf(coordinates.get(1)), verticalMax, verticalMin);
                 }
             }
             default -> {
                 for (Object coordinates : element.getCoordinates()) {
                     List<Double> doubles = (List<Double>) coordinates;
-                    for (Double coordinate : doubles) {
-                        checkRanges(BigDecimal.valueOf(coordinate), horizontalMax, horizontalMin, verticalMax, verticalMin);
-                    }
+                    checkRangesHorizontal(BigDecimal.valueOf(doubles.get(0)), horizontalMax, horizontalMin);
+                    checkRangesVertical(BigDecimal.valueOf(doubles.get(1)), verticalMax, verticalMin);
                 }
             }
         }
     }
 
-    private static void checkRanges(BigDecimal coordinate, AtomicReference<BigDecimal> horizontalMax, AtomicReference<BigDecimal> horizontalMin, AtomicReference<BigDecimal> verticalMax, AtomicReference<BigDecimal> verticalMin) {
+    private static void checkRangesHorizontal(BigDecimal coordinate, AtomicReference<BigDecimal> horizontalMax, AtomicReference<BigDecimal> horizontalMin) {
 
         if (horizontalMax.get() == null || horizontalMax.get().compareTo(coordinate) < 0) {
             horizontalMax.set(coordinate);
@@ -72,6 +74,9 @@ public abstract class AbstractLayerService {
         if (horizontalMin.get() == null || horizontalMin.get().compareTo(coordinate) > 0) {
             horizontalMin.set(coordinate);
         }
+    }
+
+    private static void checkRangesVertical(BigDecimal coordinate, AtomicReference<BigDecimal> verticalMax, AtomicReference<BigDecimal> verticalMin) {
 
         if (verticalMax.get() == null || verticalMax.get().compareTo(coordinate) < 0) {
             verticalMax.set(coordinate);
