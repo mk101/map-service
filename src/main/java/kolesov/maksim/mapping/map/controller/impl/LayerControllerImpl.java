@@ -3,6 +3,7 @@ package kolesov.maksim.mapping.map.controller.impl;
 import kolesov.maksim.mapping.map.controller.LayerController;
 import kolesov.maksim.mapping.map.dto.LayerDto;
 import kolesov.maksim.mapping.map.dto.ResponseDto;
+import kolesov.maksim.mapping.map.exception.NotFoundException;
 import kolesov.maksim.mapping.map.mapper.UserMapper;
 import kolesov.maksim.mapping.map.model.UserEntity;
 import kolesov.maksim.mapping.map.service.request_processing.AddLayerService;
@@ -54,6 +55,14 @@ public class LayerControllerImpl implements LayerController {
         return ResponseDto.<List<LayerDto>>builder()
                 .success(true)
                 .data(getLayerService.byUser(id))
+        .build();
+    }
+
+    @Override
+    public ResponseDto<LayerDto> getById(UUID id) {
+        return ResponseDto.<LayerDto>builder()
+                .success(true)
+                .data(getLayerService.byId(id).orElseThrow(() -> new NotFoundException("Layer not found")))
         .build();
     }
 

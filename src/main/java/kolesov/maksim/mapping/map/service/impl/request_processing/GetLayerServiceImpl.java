@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -30,6 +31,14 @@ public class GetLayerServiceImpl extends AbstractLayerService implements GetLaye
         layers.forEach(l -> l.setTags(layerTagRepository.findAllByLayer(l.getId())));
 
         return mapper.toDto(layers);
+    }
+
+    @Override
+    public Optional<LayerDto> byId(UUID id) {
+        return layerRepository.findById(id).map(entity -> {
+            entity.setTags(layerTagRepository.findAllByLayer(entity.getId()));
+            return entity;
+        }).map(mapper::toDto);
     }
 
 }

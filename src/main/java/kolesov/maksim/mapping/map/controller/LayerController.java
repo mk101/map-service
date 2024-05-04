@@ -27,7 +27,10 @@ public interface LayerController {
     @HasRole(value = {Role.DELETE_ANY_MAP, Role.DELETE_OWN_MAP})
     ResponseDto<Void> delete(@RequestParam UUID id, @AuthenticationPrincipal UserEntity user);
 
-    @GetMapping
+    @GetMapping("/user")
     ResponseDto<List<LayerDto>> getByUser(@RequestParam UUID id);
+
+    @GetMapping
+    ResponseDto<LayerDto> getById(@RequestParam UUID id);
 
 }
