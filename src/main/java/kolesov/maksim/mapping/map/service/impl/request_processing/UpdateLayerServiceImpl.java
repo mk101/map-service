@@ -10,11 +10,13 @@ import kolesov.maksim.mapping.map.mapper.LayerMapper;
 import kolesov.maksim.mapping.map.model.LayerEntity;
 import kolesov.maksim.mapping.map.model.Role;
 import kolesov.maksim.mapping.map.repository.LayerRepository;
+import kolesov.maksim.mapping.map.repository.LayerTagRepository;
 import kolesov.maksim.mapping.map.service.request_processing.AbstractLayerService;
 import kolesov.maksim.mapping.map.service.request_processing.UpdateLayerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -30,9 +32,11 @@ import java.util.UUID;
 public class UpdateLayerServiceImpl extends AbstractLayerService implements UpdateLayerService {
 
     private final LayerRepository layerRepository;
+    private final LayerTagRepository layerTagRepository;
     private final LayerMapper mapper;
 
     @Override
+    @Transactional
     public LayerDto update(LayerDto layerDto, UserDto user) {
         UUID layerId = layerDto.getId();
         if (layerId == null) {
@@ -50,6 +54,7 @@ public class UpdateLayerServiceImpl extends AbstractLayerService implements Upda
         layerEntity.setName(layerDto.getName());
         layerEntity.setDescription(layerDto.getDescription());
         layerEntity.setData(layerDto.getData());
+        layerEntity.setStatus(layerDto.getStatus());
 
         List<Range<BigDecimal>> ranges = evaluateRanges(layerDto.getData());
 
@@ -60,6 +65,13 @@ public class UpdateLayerServiceImpl extends AbstractLayerService implements Upda
         layerEntity.setEditBy(user.getId());
 
         layerEntity = layerRepository.save(layerEntity);
+
+        layerTagRepository.deleteAllByLayer(layerEntity.getId());
+        layerTagRepository.saveAll(layerDto.getTags().stream().map(mapper::tagValue).map(v -> {
+            v.setLayerId(layerId);
+            v.setId(null);
+            return v;
+        }).toList());
 
         return mapper.toDto(layerEntity);
     }
