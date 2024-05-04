@@ -69,7 +69,7 @@ public class UpdateLayerServiceImpl extends AbstractLayerService implements Upda
         layerTagRepository.deleteAllByLayer(layerEntity.getId());
         layerTagRepository.saveAll(layerDto.getTags().stream().map(mapper::tagValue).map(v -> {
             v.setLayerId(layerId);
-            v.setId(null);
+            v.setId(UUID.randomUUID());
             return v;
         }).toList());
 
