@@ -32,9 +32,11 @@ public class SecurityConfig {
                         authorize -> authorize
                                 .requestMatchers("/actuator/health")
                                     .permitAll()
-                                .requestMatchers(HttpMethod.GET, "/layers")
+                                .requestMatchers(HttpMethod.GET, "/layers", "/layers/user")
                                     .permitAll()
                                 .requestMatchers("/search")
+                                    .permitAll()
+                                .requestMatchers("/v3/api-docs")
                                     .permitAll()
                                 .anyRequest()
                                     .authenticated()
