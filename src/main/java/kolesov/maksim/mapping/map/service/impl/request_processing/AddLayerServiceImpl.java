@@ -7,6 +7,7 @@ import kolesov.maksim.mapping.map.mapper.LayerMapper;
 import kolesov.maksim.mapping.map.model.LayerEntity;
 import kolesov.maksim.mapping.map.repository.LayerRepository;
 import kolesov.maksim.mapping.map.repository.LayerTagRepository;
+import kolesov.maksim.mapping.map.service.ElasticsearchService;
 import kolesov.maksim.mapping.map.service.request_processing.AbstractLayerService;
 import kolesov.maksim.mapping.map.service.request_processing.AddLayerService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class AddLayerServiceImpl extends AbstractLayerService implements AddLaye
 
     private final LayerRepository layerRepository;
     private final LayerTagRepository layerTagRepository;
+    private final ElasticsearchService elasticsearchService;
 
     private final LayerMapper mapper;
 
@@ -51,6 +53,8 @@ public class AddLayerServiceImpl extends AbstractLayerService implements AddLaye
 
         layerRepository.save(entity);
         layerTagRepository.saveAll(entity.getTags());
+
+        elasticsearchService.addLayer(entity);
 
         return mapper.toDto(entity);
     }

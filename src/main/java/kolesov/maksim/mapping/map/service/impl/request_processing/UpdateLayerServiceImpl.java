@@ -8,9 +8,11 @@ import kolesov.maksim.mapping.map.exception.ForbiddenException;
 import kolesov.maksim.mapping.map.exception.NotFoundException;
 import kolesov.maksim.mapping.map.mapper.LayerMapper;
 import kolesov.maksim.mapping.map.model.LayerEntity;
+import kolesov.maksim.mapping.map.model.LayerTagEntity;
 import kolesov.maksim.mapping.map.model.Role;
 import kolesov.maksim.mapping.map.repository.LayerRepository;
 import kolesov.maksim.mapping.map.repository.LayerTagRepository;
+import kolesov.maksim.mapping.map.service.ElasticsearchService;
 import kolesov.maksim.mapping.map.service.request_processing.AbstractLayerService;
 import kolesov.maksim.mapping.map.service.request_processing.UpdateLayerService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.StreamSupport;
 
 @Slf4j
 @Service
@@ -33,6 +36,7 @@ public class UpdateLayerServiceImpl extends AbstractLayerService implements Upda
 
     private final LayerRepository layerRepository;
     private final LayerTagRepository layerTagRepository;
+    private final ElasticsearchService elasticsearchService;
     private final LayerMapper mapper;
 
     @Override
@@ -67,11 +71,14 @@ public class UpdateLayerServiceImpl extends AbstractLayerService implements Upda
         layerEntity = layerRepository.save(layerEntity);
 
         layerTagRepository.deleteAllByLayer(layerEntity.getId());
-        layerTagRepository.saveAll(layerDto.getTags().stream().map(mapper::tagValue).map(v -> {
+        Iterable<LayerTagEntity> layerTagEntities = layerTagRepository.saveAll(layerDto.getTags().stream().map(mapper::tagValue).map(v -> {
             v.setLayerId(layerId);
             v.setId(UUID.randomUUID());
             return v;
         }).toList());
+
+        layerEntity.setTags(StreamSupport.stream(layerTagEntities.spliterator(), false).toList());
+        elasticsearchService.updateLayer(layerEntity);
 
         return mapper.toDto(layerEntity);
     }

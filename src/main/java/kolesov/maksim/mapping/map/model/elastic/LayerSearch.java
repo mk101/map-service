@@ -1,5 +1,6 @@
 package kolesov.maksim.mapping.map.model.elastic;
 
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -8,6 +9,7 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import java.util.List;
 
 @Data
+@Builder
 @Document(indexName = "layers")
 public class LayerSearch {
 

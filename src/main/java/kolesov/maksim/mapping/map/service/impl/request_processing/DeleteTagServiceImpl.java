@@ -9,8 +9,8 @@ import kolesov.maksim.mapping.map.model.LayerTagEntity;
 import kolesov.maksim.mapping.map.model.Role;
 import kolesov.maksim.mapping.map.repository.LayerRepository;
 import kolesov.maksim.mapping.map.repository.LayerTagRepository;
-import kolesov.maksim.mapping.map.service.request_processing.AbstractDeleteService;
 import kolesov.maksim.mapping.map.service.request_processing.DeleteTagService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -25,25 +25,12 @@ import java.util.UUID;
 
 @Slf4j
 @Service
-public class DeleteTagServiceImpl extends AbstractDeleteService implements DeleteTagService {
+@RequiredArgsConstructor
+public class DeleteTagServiceImpl implements DeleteTagService {
 
     private final LayerRepository layerRepository;
     private final LayerTagRepository layerTagRepository;
     private final LayerMapper mapper;
-
-    @Autowired
-    public DeleteTagServiceImpl(
-            ElasticsearchOperations elasticsearchTemplate,
-            LayerRepository layerRepository,
-            LayerTagRepository layerTagRepository,
-            LayerMapper mapper
-    ) {
-        super(elasticsearchTemplate, log);
-
-        this.layerRepository = layerRepository;
-        this.layerTagRepository = layerTagRepository;
-        this.mapper = mapper;
-    }
 
     @Override
     @Transactional
@@ -66,8 +53,6 @@ public class DeleteTagServiceImpl extends AbstractDeleteService implements Delet
         layer.setEditBy(user.getId());
         layer.setEditAt(mapper.offsetToTimestamp(OffsetDateTime.now(Clock.systemUTC())));
         layerRepository.save(layer);
-
-        invalidateElastic("layers");
     }
 
 }
