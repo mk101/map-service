@@ -1,5 +1,7 @@
 package kolesov.maksim.mapping.map.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.tags.Tags;
 import kolesov.maksim.mapping.map.annotation.HasRole;
 import kolesov.maksim.mapping.map.dto.ResponseDto;
 import kolesov.maksim.mapping.map.model.Role;
@@ -17,10 +19,12 @@ public interface TagController {
 
     @PostMapping
     @HasRole({Role.EDIT_ANY_MAP, Role.EDIT_OWN_MAP})
+    @Tags(value = {@Tag(name = "MapService"), @Tag(name = "Tag")})
     ResponseDto<Void> add(@RequestParam UUID layerId, @RequestParam String tag, @AuthenticationPrincipal UserEntity user);
 
     @DeleteMapping
     @HasRole({Role.EDIT_ANY_MAP, Role.EDIT_OWN_MAP})
+    @Tags(value = {@Tag(name = "MapService"), @Tag(name = "Tag")})
     ResponseDto<Void> delete(@RequestParam UUID layerId, @RequestParam String tag, @AuthenticationPrincipal UserEntity user);
 
 }
