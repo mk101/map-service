@@ -28,6 +28,12 @@ public class LayerControllerImpl implements LayerController {
 
     @Override
     public ResponseDto<LayerDto> create(LayerDto dto, UserEntity user) {
+        if (Boolean.FALSE.equals(user.getActive())) {
+            return ResponseDto.<LayerDto>builder()
+                    .success(false)
+                    .error("User disabled")
+                    .build();
+        }
         return ResponseDto.<LayerDto>builder()
                 .success(true)
                 .data(addLayerService.add(dto, userMapper.toDto(user)))
@@ -36,6 +42,12 @@ public class LayerControllerImpl implements LayerController {
 
     @Override
     public ResponseDto<LayerDto> update(LayerDto dto, UserEntity user) {
+        if (Boolean.FALSE.equals(user.getActive())) {
+            return ResponseDto.<LayerDto>builder()
+                    .success(false)
+                    .error("User disabled")
+                    .build();
+        }
         return ResponseDto.<LayerDto>builder()
                 .success(true)
                 .data(updateLayerService.update(dto, userMapper.toDto(user)))
@@ -44,6 +56,12 @@ public class LayerControllerImpl implements LayerController {
 
     @Override
     public ResponseDto<Void> delete(UUID id, UserEntity user) {
+        if (Boolean.FALSE.equals(user.getActive())) {
+            return ResponseDto.<Void>builder()
+                    .success(false)
+                    .error("User disabled")
+                    .build();
+        }
         deleteLayerService.delete(id, userMapper.toDto(user));
         return ResponseDto.<Void>builder()
                 .success(true)

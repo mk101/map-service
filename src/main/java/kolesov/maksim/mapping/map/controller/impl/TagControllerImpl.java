@@ -1,6 +1,7 @@
 package kolesov.maksim.mapping.map.controller.impl;
 
 import kolesov.maksim.mapping.map.controller.TagController;
+import kolesov.maksim.mapping.map.dto.LayerDto;
 import kolesov.maksim.mapping.map.dto.ResponseDto;
 import kolesov.maksim.mapping.map.mapper.UserMapper;
 import kolesov.maksim.mapping.map.model.UserEntity;
@@ -21,6 +22,12 @@ public class TagControllerImpl implements TagController {
 
     @Override
     public ResponseDto<Void> add(UUID layerId, String tag, UserEntity user) {
+        if (!user.getActive()) {
+            return ResponseDto.<Void>builder()
+                    .success(false)
+                    .error("User disabled")
+                    .build();
+        }
         addTagService.addTag(layerId, tag, userMapper.toDto(user));
         return ResponseDto.<Void>builder()
                 .success(true)
@@ -29,6 +36,12 @@ public class TagControllerImpl implements TagController {
 
     @Override
     public ResponseDto<Void> delete(UUID layerId, String tag, UserEntity user) {
+        if (!user.getActive()) {
+            return ResponseDto.<Void>builder()
+                    .success(false)
+                    .error("User disabled")
+                    .build();
+        }
         deleteTagService.delete(layerId, tag, userMapper.toDto(user));
         return ResponseDto.<Void>builder()
                 .success(true)
